@@ -21,9 +21,9 @@ export async function sendEmail(email: string, url: string) {
   const info = await transporter.sendMail({
     from: '"[App Name] 👻" <AppName@example.com>', // sender address
     to: email,
-    subject: "[App Name] Email Verification", // Subject line
-    text: "Verify your e-mail to finish signing up.", // plain text body
-    html: `<a href=${url}>Confirm</b>`, // html body
+    subject: "[App Name] Blah.", // Subject line
+    text: "Blah.", // plain text body
+    html: `<a href=${url}>🧐</b>`, // html body
   });
 
   console.log("Message sent: %s", info.messageId);
