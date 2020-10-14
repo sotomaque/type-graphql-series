@@ -23,7 +23,7 @@ export async function sendEmail(email: string, url: string) {
     to: email,
     subject: "[App Name] Blah.", // Subject line
     text: "Blah.", // plain text body
-    html: `<a href=${url}>🧐</b>`, // html body
+    html: `<a href=${url}>Click Me</b>`, // html body
   });
 
   console.log("Message sent: %s", info.messageId);
