@@ -1,7 +1,9 @@
 import { Connection } from "typeorm";
+import faker from 'faker'
 
 import { gCall } from "../../../../test-utils/gCall";
 import { testConn } from "../../../../test-utils/testConn";
+import { User } from "../../../../entity/User";
 
 let conn: Connection;
 beforeAll(async () => {
@@ -19,7 +21,7 @@ mutation Register($data: RegisterInput!) {
     id
     firstName
     lastName
-    email
+		email
     name
   }
 }
@@ -27,33 +29,35 @@ mutation Register($data: RegisterInput!) {
 
 describe("Register Resolver", () => {
   test("should successfully create user using the register mutation when valid credentials are passed", async () => {
-    
+		
+		const user = {
+			firstName: faker.name.firstName(),
+			lastName: faker.name.lastName(),
+			email: faker.internet.email(),
+			password: faker.internet.password()
+		}
+
     const res = await gCall({
 			source: registerMutation,
 			variableValues: {
-				data: {
-					firstName: "bob",
-					lastName: "bob2",
-					email: "bob@bob.com",
-					password: "asdfasdf"
-				}
+				data: user
 			}
 		});
-		expect(res).toBeTruthy();
 
-		const expectedResponse = {
+		// expect(res).toBeTruthy();
+		expect(res).toMatchObject({
       data: {
         register: {
-          id: '1',
-          firstName: 'bob',
-          lastName: 'bob2',
-          email: 'bob@bob.com',
-          name: 'bob bob2'
+					firstName: user.firstName,
+					lastName: user.lastName,
+					email: user.email					
         }
       }
-		}
-		
-		expect(res).toEqual(expectedResponse)
-  
+		});
+
+		const dbUser = await User.findOne({ where: { email: user.email }});
+		expect(dbUser).toBeDefined();
+		expect(dbUser!.confirmed).toBeFalsy();
+		expect(dbUser!.firstName).toBe(user.firstName);
   });
 });
